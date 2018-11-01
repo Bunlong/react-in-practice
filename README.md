@@ -1,5 +1,18 @@
 # React in Practice
 
+### Table of contents:
+
+Hooks
+
+ 1. Introducing
+ 2. A Brief of Hook
+ 3. Using the State Hook
+ 4. Using the Effect Hook
+ 5. Writing Custom Hooks
+ 6. Hooks APIs
+
+---
+
 ### Hooks
 
 #### 1. Introducing
@@ -8,9 +21,9 @@ Hooks are a new feature that lets you use state and other React features without
 
 Hooks are functions that let you "hook into" React state and lifecycle features from function components. Hooks don't work inside classes they let you use React without classes.
 
-#### 2. A brief of Hook
+#### 2. A Brief of Hook
 
-##### State Hook
+**State Hook**
 
 Renders a counter example. When you click the button, it increments the value:
 
@@ -71,7 +84,7 @@ class App extends React.Component {
 export default App;
 ```
 
-***Declaring multiple state variables***
+**Declaring multiple state variables**
 
 You can use State Hook more than once in a single component:
 
@@ -85,3 +98,82 @@ function withManyStates() {
 ```
 
 React also provides a few built-in Hooks like `useState`. You can also create custom Hooks to reuse stateful behavior between different components. We'll look at the built-in Hooks first.
+
+**Effect Hook**
+
+You likely performe data fetching, subscriptions, or manually changing the DOM from React components using React lifecycle ( componentDidMount, componentDidUpdate and componentWillUnmount ) in React classes. We call these operations "side effects".
+
+The Effect Hook, `useEffect`, adds the ability to perform side effects from a function component. It serves the same purpose as React lifecycle ( componentDidMount, componentDidUpdate, and componentWillUnmount ) in React classes, but unified into a single API.
+
+Example, this component sets the document title after React updates the DOM:
+
+Using React Hook
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    // Update the document title using the browser API
+    document.title = `You clicked ${count} times`;
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+- When you call `useEffect`, you're telling React to run your "effect" function after flushing changes to the DOM.
+- Effects are declared inside the component so they have access to its props and state. By default, React runs the effects after every render including the first render.
+
+Using React Class
+
+```javascript
+import React from 'react';
+
+class App extends React.Component {
+  state = {
+    count: 0,
+  }
+
+  componentDidMount() {
+    document.title = `You clicked ${this.state.count} times`;
+  }
+
+  componentDidUpdate() {
+    document.title = `You clicked ${this.state.count} times`;
+    window.addEventListener('resize', this.setCount);
+  }
+
+  setCount = () => {
+    this.setState({
+      count: this.state.count + 1,
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <p>You clicked {this.state.count} times</p>
+        <button onClick={() => this.setCount()}>
+          Click me
+        </button>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+---
