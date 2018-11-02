@@ -290,4 +290,8 @@ Hooks are JavaScript functions, but they impose two additional rules:
 
 The better way you can use a [linter plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to enforce these rules automatically.
 
+**Custom Hooks**
+
+Well, sometimes we want to reuse some stateful logic between components. Traditionally, there were two popular solutions to this problem: `higher-order components` and `render props`. Custom Hooks let you do this, but without adding more components to your tree.
+
 ---
