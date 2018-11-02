@@ -1,32 +1,28 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-class App extends React.Component {
+class App extends Component {
   state = {
-    count: 0,
+    width: window.innerWidth,
   }
 
-  componentDidMount() {
-    document.title = `You clicked ${this.state.count} times`;
+  UNSAFE_componentWillMount() {
+    window.addEventListener('resize', this.handleResize);
   }
 
-  componentDidUpdate() {
-    document.title = `You clicked ${this.state.count} times`;
-    window.addEventListener('resize', this.setCount);
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
   }
 
-  setCount = () => {
+  handleResize = () => {
     this.setState({
-      count: this.state.count + 1,
+      width: window.innerWidth,
     });
   }
 
   render() {
     return (
       <div>
-        <p>You clicked {this.state.count} times</p>
-        <button onClick={() => this.setCount()}>
-          Click me
-        </button>
+        <p>Window width: {this.state.width}</p>
       </div>
     );
   }

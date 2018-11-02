@@ -176,4 +176,70 @@ class App extends React.Component {
 
 export default App;
 ```
+
+Example, React would clean up `resize` event when the component unmounts, as well as before re-running the effect due to a subsequent render.
+
+Using React Hook
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function App() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', this.handleResize);
+    // Clean up resize event
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+
+  return (
+    <div>
+      <p>Window width: {width}</p>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Using React Class
+
+```javascript
+import React, { Component } from 'react';
+
+class App extends Component {
+  state = {
+    width: window.innerWidth,
+  }
+
+  UNSAFE_componentWillMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    this.setState({
+      width: window.innerWidth,
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <p>Window width: {this.state.width}</p>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
 ---
