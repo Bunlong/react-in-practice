@@ -1,31 +1,27 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
-class App extends Component {
-  state = {
-    width: window.innerWidth,
-  }
+function App() {
+  const [width, setWidth] = useState(window.innerWidth);
 
-  UNSAFE_componentWillMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
+  useEffect(() => {
+    document.title = `Window width: ${width}`;
+  });
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    // Clean up resize event
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
 
-  handleResize = () => {
-    this.setState({
-      width: window.innerWidth,
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <p>Window width: {this.state.width}</p>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <p>Window width: {width}</p>
+    </div>
+  );
 }
 
 export default App;

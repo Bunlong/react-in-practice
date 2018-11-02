@@ -190,7 +190,7 @@ function App() {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('resize', handleResize);
     // Clean up resize event
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -206,6 +206,8 @@ function App() {
 
 export default App;
 ```
+
+In this example, React would unsubscribe from our ChatAPI when the component unmounts, as well as before re-running the effect due to a subsequent render. (If you want, there’s a way to tell React to skip re-subscribing if the props.friend.id we passed to ChatAPI didn’t change.)
 
 Using React Class
 
@@ -242,4 +244,50 @@ class App extends Component {
 
 export default App;
 ```
+
+Just like with `useState`, you can use multiple effect in a component:
+
+Using React Hook
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function App() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    document.title = `Window width: ${width}`;
+  });
+
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    // Clean up resize event
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+
+  return (
+    <div>
+      <p>Window width: {width}</p>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Hooks let you organize side effects in a component by what pieces are related (such as adding and removing a event or subscription), rather than forcing a split based on lifecycle methods.
+
+**Rules of Hooks**
+
+Hooks are JavaScript functions, but they impose two additional rules:
+
+- Only call Hooks at the top level. Don't call Hooks inside loops, conditions, or nested functions.
+- Only call Hooks from React function components. Don't call Hooks from regular JavaScript functions. (There is just one other valid place to call Hooks is your own custom Hooks.)
+
+The better way you can use a [linter plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to enforce these rules automatically.
+
 ---
