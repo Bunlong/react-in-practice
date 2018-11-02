@@ -13,15 +13,15 @@ Hooks
 
 ---
 
-### Hooks
+## Hooks
 
-#### 1. Introducing
+### 1. Introducing
 
 Hooks are a new feature that lets you use state and other React features without writing a class. They're released in React v16.7.0.
 
 Hooks are functions that let you "hook into" React state and lifecycle features from function components. Hooks don't work inside classes they let you use React without classes.
 
-#### 2. A Brief of Hook
+### 2. A Brief of Hook
 
 **State Hook**
 
