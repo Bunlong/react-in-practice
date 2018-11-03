@@ -84,7 +84,7 @@ class App extends React.Component {
 export default App;
 ```
 
-**Declaring multiple state variables**
+Declaring multiple state variables.
 
 You can use State Hook more than once in a single component:
 
@@ -344,4 +344,35 @@ To build your own hooks you need to follow the `useSomething` naming convention.
 
 You can write custom Hooks that cover a wide range of use cases like form handling, animation, declarative subscriptions, timers, and probably many more we haven't considered.
 
+### 3. Using the State Hook
+
+#### What's a Hook?
+
+What is a Hook? A Hook is a special function that lets you "hook into" React features. For example, `useState` is a Hook that lets you add React state to function components.
+
+#### When would I use a Hook?
+
+When would I use a Hook? If you write a function component and realize you need to add some state to it, previously you had to convert it to a class. Now you can use a Hook inside the existing function component.
+
+#### Hooks and Function Components
+
+Function components in React look like this:
+
+```javascript
+const Example = (props) => {
+  // You can use Hooks here!
+  return <div />;
+}
+```
+
+or this:
+
+```javascript
+function Example(props) {
+  // You can use Hooks here!
+  return <div />;
+}
+```
+
+Hooks don’t work inside classes. But you can use them instead of writing classes.
 ---
