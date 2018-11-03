@@ -207,8 +207,6 @@ function App() {
 export default App;
 ```
 
-In this example, React would unsubscribe from our ChatAPI when the component unmounts, as well as before re-running the effect due to a subsequent render. (If you want, there’s a way to tell React to skip re-subscribing if the props.friend.id we passed to ChatAPI didn’t change.)
-
 Using React Class
 
 ```javascript
@@ -294,4 +292,50 @@ The better way you can use a [linter plugin](https://www.npmjs.com/package/eslin
 
 Well, sometimes we want to reuse some stateful logic between components. Traditionally, there were two popular solutions to this problem: `higher-order components` and `render props`. Custom Hooks let you do this, but without adding more components to your tree.
 
+Earlier on this page, we introduced a App component that calls the `useState` and `useEffect` Hooks to get window width and display on browser title. Let's say we also want to reuse this App logic in another component.
+
+Using React Hook
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function App() {
+  const width = useWindowWidth();
+
+  useDocumentTitle(`Window width: ${width}`);
+
+  return (
+    <div>
+      <p>Window width: {width}</p>
+    </div>
+  );
+}
+
+function useDocumentTitle(title) {
+  useEffect(() => {
+    document.title = title;
+  });
+}
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    // Clearn up
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+  return width;
+}
+
+export default App;
+```
+
+Using React Class
+
+```javascript
+
+```
 ---
