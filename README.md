@@ -288,29 +288,15 @@ Hooks are JavaScript functions, but they impose two additional rules:
 
 The better way you can use a [linter plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to enforce these rules automatically.
 
-**Custom Hooks**
+**Building Your Own Hooks**
 
 Well, sometimes we want to reuse some stateful logic between components. Traditionally, there were two popular solutions to this problem: `higher-order components` and `render props`. Custom Hooks let you do this, but without adding more components to your tree.
 
 Earlier on this page, we introduced a App component that calls the `useState` and `useEffect` Hooks to get window width and display on browser title. Let's say we also want to reuse this App logic in another component.
 
-Using React Hook
+First, we'll extract this logic into a custom Hook called `useWindowWidth` and `useDocumentTitle`:
 
 ```javascript
-import React, { useState, useEffect } from 'react';
-
-function App() {
-  const width = useWindowWidth();
-
-  useDocumentTitle(`Window width: ${width}`);
-
-  return (
-    <div>
-      <p>Window width: {width}</p>
-    </div>
-  );
-}
-
 function useDocumentTitle(title) {
   useEffect(() => {
     document.title = title;
@@ -329,13 +315,33 @@ function useWindowWidth() {
   });
   return width;
 }
+```
+
+Now we can use it from the component:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function App() {
+  const width = useWindowWidth();
+
+  useDocumentTitle(`Window width: ${width}`);
+
+  return (
+    <div>
+      <p>Window width: {width}</p>
+    </div>
+  );
+}
+
 
 export default App;
 ```
 
-Using React Class
+The state of these components is completely independent. Hooks are a way to reuse stateful logic, not state itself. In fact, each call to a Hook has a completely isolated state and so you can even use the same custom Hook twice in one component.
 
-```javascript
+To build your own hooks you need to follow the `useSomething` naming convention. If a function's name starts with "use" and it calls other Hooks, we say it is a custom Hook.
 
-```
+You can write custom Hooks that cover a wide range of use cases like form handling, animation, declarative subscriptions, timers, and probably many more we haven't considered.
+
 ---
