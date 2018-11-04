@@ -375,4 +375,29 @@ function Example(props) {
 ```
 
 Hooks don’t work inside classes. But you can use them instead of writing classes.
+
+#### Declaring a State Variable
+
+In a React class, we initialize the `count` state to `0` by setting `this.state` to `{ count: 0 }` in the constructor:
+
+```javascript
+class Example extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+```
+
+In a function component, we have no `this`, so we can't assign or read `this.state`. Instead, we call the `useState` Hook directly inside our component:
+
+```javascript
+import { useState } from 'react';
+
+function Example() {
+  // Declare a new state variable, which we'll call "count"
+  const [count, setCount] = useState(0);
+```
+
 ---
