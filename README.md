@@ -413,4 +413,72 @@ What do we pass to `useState` as an argument?
   - In the example above, we just want a number for how many times the user clicked, so pass 0 as initial state for our variable.
   - If we wanted to store two different values in state, we would call `useState()` twice.
 
+What does `useState` return?
+  
+  - It returns a pair of values: the current state and a function that updates it.
+  - This is why we write `const [count, setCount] = useState()`. This is similar to `this.state.count` and `this.setState` in a class, except you get them in a pair.
+
+Now that we know what the `useState` Hook does, our example should make more sense:
+
+```javascript
+import { useState } from 'react';
+
+function Example() {
+  // Declare a new state variable, which we'll call "count"
+  const [count, setCount] = useState(0);
+```
+
+We declare a state variable called `count`, and set it to `0`. React will remember its current value between re-renders, and provide the most recent one to our function. If we want to update the current count, we can call `setCount`.
+
+#### Reading State
+
+When we want to display the current count in a class, we read `this.state.count`:
+
+```javascript
+<p>You clicked {this.state.count} times</p>
+```
+In a function, we can use count directly:
+
+```javascript
+<p>You clicked {count} times</p>
+```
+
+#### Updating State
+
+In a class, we need to call this.setState() to update the count state:
+
+```javascript
+<button onClick={() => this.setState({ count: this.state.count + 1 })}>
+  Click me
+</button>
+```
+
+In a function, we already have setCount and count as variables so we don’t need this:
+
+```javascript
+<button onClick={() => setCount(count + 1)}>
+  Click me
+</button>
+```
+
+#### Overview
+
+Let's now review what we learned line by line and check our understanding:
+
+```javascript
+import { useState } from 'react';
+ 
+function Example() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
 ---
