@@ -400,4 +400,10 @@ function Example() {
   const [count, setCount] = useState(0);
 ```
 
+What does calling `useState` do? 
+
+  - It declares a "state variable". 
+  - `useState` is a new way to use the exact same capabilities that `this.state` provides in a class.
+  - Normally, variables "disappear" when the function exits but state variables are preserved by React.
+
 ---
