@@ -751,4 +751,201 @@ When exactly does React clean up an effect?
 
 #### Overview
 
+
+We've learned that `useEffect` lets us express different kinds of side effects after a component renders. Some effects might require cleanup so they return a function:
+
+```javascript
+useEffect(() => {
+  ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+  return () => {
+    ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+  };
+});
+```
+
+Other effects might not have a cleanup phase, and don’t return anything.
+
+```javascript
+useEffect(() => {
+  document.title = `You clicked ${count} times`;
+});
+```
+
+#### Use Multiple Effects to Separate Concerns
+
+One of the problems we pointed out in the Motivation for Hooks is that class lifecycle methods often contain unrelated logic, but related logic gets broken up into several methods. Here is a component that combines the counter and the friend status indicator logic from the previous examples:
+
+```javascript
+class FriendStatusWithCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0, isOnline: null };
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+  }
+
+  componentDidMount() {
+    document.title = `You clicked ${this.state.count} times`;
+    ChatAPI.subscribeToFriendStatus(
+      this.props.friend.id,
+      this.handleStatusChange
+    );
+  }
+
+  componentDidUpdate() {
+    document.title = `You clicked ${this.state.count} times`;
+  }
+
+  componentWillUnmount() {
+    ChatAPI.unsubscribeFromFriendStatus(
+      this.props.friend.id,
+      this.handleStatusChange
+    );
+  }
+
+  handleStatusChange(status) {
+    this.setState({
+      isOnline: status.isOnline
+    });
+  }
+  // ...
+```
+
+Note: how the logic that sets `document.title` is split between `componentDidMount` and `componentDidUpdate`. The subscription logic is also spread between `componentDidMount` and `componentWillUnmount`. And `componentDidMount` contains code for both tasks.
+
+So, how can Hooks solve this problem? Just like you can use the State Hook more than once, you can also use several effects. This lets us separate unrelated logic into different effects:
+
+```javascript
+function FriendStatusWithCounter(props) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+
+  const [isOnline, setIsOnline] = useState(null);
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+  // ...
+}
+```
+
+Hooks lets us split the code based on what it is doing rather than a lifecycle method name. React will apply every effect used by the component, in the order they were specified.
+
+#### Why Effects Run on Each Update
+
+If you're used to classes, you might be wondering why the effect cleanup phase happens after every re-render, and not just once during unmounting. Let's look at a practical example to see why this design helps us create components with fewer bugs.
+
+Earlier on this page, we introduced an example `FriendStatus` component that displays whether a friend is online or not. Our class reads `friend.id` from `this.props`, subscribes to the friend status after the component mounts, and unsubscribes during unmounting:
+
+```javascript
+componentDidMount() {
+  ChatAPI.subscribeToFriendStatus(
+    this.props.friend.id,
+    this.handleStatusChange
+  );
+}
+
+componentWillUnmount() {
+  ChatAPI.unsubscribeFromFriendStatus(
+    this.props.friend.id,
+    this.handleStatusChange
+  );
+}
+```
+
+But what happens if the friend prop changes while the component is on the screen?
+
+ - Our component would continue displaying the online status of a different friend.
+ - This is a bug.
+ - We would also cause a memory leak or crash when unmounting since the unsubscribe call would use the wrong friend ID.
+
+In a class component, we would need to add `componentDidUpdate` to handle this case:
+
+```javascript
+componentDidMount() {
+  ChatAPI.subscribeToFriendStatus(
+    this.props.friend.id,
+    this.handleStatusChange
+  );
+}
+
+componentDidUpdate(prevProps) {
+  // Unsubscribe from the previous friend.id
+  ChatAPI.unsubscribeFromFriendStatus(
+    prevProps.friend.id,
+    this.handleStatusChange
+  );
+  // Subscribe to the next friend.id
+  ChatAPI.subscribeToFriendStatus(
+    this.props.friend.id,
+    this.handleStatusChange
+  );
+}
+
+componentWillUnmount() {
+  ChatAPI.unsubscribeFromFriendStatus(
+    this.props.friend.id,
+    this.handleStatusChange
+  );
+}
+```
+
+Forgetting to handle `componentDidUpdate` properly is a common source of bugs in React applications.
+
+Now take a look at the version of this component that uses Hooks:
+
+```javascript
+function FriendStatus(props) {
+  // ...
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+```
+
+It doesn't suffer from this bug. (But we also didn’t make any changes to it.)
+
+There is no special code for handling updates because `useEffect` handles them by default. It cleans up the previous effects before applying the next effects. To illustrate this, here is a sequence of subscribe and unsubscribe calls that this component could produce over time:
+
+```javascript
+// Mount with { friend: { id: 100 } } props
+ChatAPI.subscribeToFriendStatus(100, handleStatusChange);     // Run first effect
+
+// Update with { friend: { id: 200 } } props
+ChatAPI.unsubscribeFromFriendStatus(100, handleStatusChange); // Clean up previous effect
+ChatAPI.subscribeToFriendStatus(200, handleStatusChange);     // Run next effect
+
+// Update with { friend: { id: 300 } } props
+ChatAPI.unsubscribeFromFriendStatus(200, handleStatusChange); // Clean up previous effect
+ChatAPI.subscribeToFriendStatus(300, handleStatusChange);     // Run next effect
+
+// Unmount
+ChatAPI.unsubscribeFromFriendStatus(300, handleStatusChange); // Clean up last effect
+```
+
+This behavior ensures consistency by default and prevents bugs that are common in class components due to missing update logic.
+
+#### Optimizing Performance by Skipping Effects
+
+In some cases, cleaning up or applying the effect after every render might create a performance problem. In class components, we can solve this by writing an extra comparison with prevProps or prevState inside `componentDidUpdate`:
+
+```javascript
+componentDidUpdate(prevProps, prevState) {
+  if (prevState.count !== this.state.count) {
+    document.title = `You clicked ${this.state.count} times`;
+  }
+}
+```
+
+This requirement is common enough that it is built into the useEffect Hook API. You can tell React to skip applying an effect if certain values haven’t changed between re-renders. To do so, pass an array as an optional second argument to useEffect:
+
 ---
