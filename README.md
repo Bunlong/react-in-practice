@@ -642,7 +642,113 @@ Does useEffect run after every render?
 
 By default, it runs both after the first render and after every update. (We will later talk about how to customize this.) Instead of thinking in terms of "mounting" and "updating", you might find it easier to think that effects happen "after render". React guarantees the DOM has been updated by the time it runs the effects.
 
+**Detailed Explanation**
 
+Now that we know more about effects, these lines should make sense:
 
+```javascript
+function Example() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+```
+
+- We declare the count state variable, and then we tell React we need to use an effect.
+- We pass a function to the `useEffect` Hook. This function we pass is our effect.
+- Inside our effect, we set the document title using the `document.title` browser API. We can read the latest count inside the effect because it's in the scope of our function. 
+- When React renders our component, it will remember the effect we used, and then run our effect after updating the DOM. This happens for every render, including the first one.
+
+#### Using Effects with Cleanup
+
+Earlier, we looked at how to express side effects that don't require any cleanup. However, some effects do. For example, we might want to set up a subscription to some external data source. In that case, it is important to clean up so that we don't introduce a memory leak. Let's compare how we can do it with classes and with Hooks.
+
+**Example Using Classes**
+
+In a React class, you would always set up a subscription in `componentDidMount`, and clean it up in `componentWillUnmount`. For example, let's say we have a ChatAPI module that lets us subscribe to a friend's online status. Here's how we might subscribe and display that status using a class:
+
+```javascript
+class FriendStatus extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isOnline: null };
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+  }
+
+  componentDidMount() {
+    ChatAPI.subscribeToFriendStatus(
+      this.props.friend.id,
+      this.handleStatusChange
+    );
+  }
+
+  componentWillUnmount() {
+    ChatAPI.unsubscribeFromFriendStatus(
+      this.props.friend.id,
+      this.handleStatusChange
+    );
+  }
+
+  handleStatusChange(status) {
+    this.setState({
+      isOnline: status.isOnline
+    });
+  }
+
+  render() {
+    if (this.state.isOnline === null) {
+      return 'Loading...';
+    }
+    return this.state.isOnline ? 'Online' : 'Offline';
+  }
+}
+```
+
+Notice: how `componentDidMount` and `componentWillUnmount` need to mirror each other. Lifecycle methods force us to split this logic even though conceptually code in both of them is related to the same effect.
+
+**Example Using Hooks**
+
+You might be thinking that we'd need a separate effect to perform the cleanup. But code for adding and removing a subscription is so tightly related that `useEffect` is designed to keep it together. If your effect returns a function, React will run it when it is time to clean up:
+
+```javascript
+import { useState, useEffect } from 'react';
+
+function FriendStatus(props) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+Why did we return a function from our effect?
+
+  - This is the optional cleanup mechanism for effects.
+  - Every effect may return a function that cleans up after it. 
+  - This lets us keep the logic for adding and removing subscriptions close to each other.
+  - They're part of the same effect!
+
+When exactly does React clean up an effect?
+
+  - React performs the cleanup when the component unmounts.
+  - However, as we learned earlier, effects run for every render and not just once.
+  - This is why React also cleans up effects from the previous render before running the effects next time.
+
+#### Overview
 
 ---
