@@ -1167,4 +1167,64 @@ const isRecipientOnline = useFriendStatus(recipientID);
 
 This lets us know whether the currently selected friend is online. If we pick a different friend and update the `recipientID` state variable, our `useFriendStatus` Hook will unsubscribe from the previously selected friend, and subscribe to the status of the newly selected one.
 
+#### useYourImagination()
+
+Custom Hooks offer the flexibility of sharing logic that wasn't possible in React components before.
+
+You can write custom Hooks that cover a wide range of use cases like form handling, animation, declarative subscriptions, timers, and probably many more. What's more, you can build Hooks that are just as easy to use as React's built-in features.
+
+Try to resist adding abstraction too early. Now that function components can do more, it's likely that the average function component in your codebase will become longer. This is normal — don’t feel like you have to immediately split it into Hooks. But we also encourage you to start spotting cases where a custom Hook could hide complex logic behind a simple interface, or help untangle a messy component.
+
+A custom Hook could hide complex logic behind a simple interface, or help untangle a messy component.
+
+For example, maybe you have a complex component that contains a lot of local state that is managed in an ad-hoc way. `useState` doesn't make centralizing the update logic any easier so might you prefer to write it as a Redux reducer:
+
+```javascript
+function todosReducer(state, action) {
+  switch (action.type) {
+    case 'add':
+      return [...state, {
+        text: action.text,
+        completed: false
+      }];
+    // ... other actions ...
+    default:
+      return state;
+  }
+}
+```
+
+Reducers are very convenient to test in isolation, and scale to express complex update logic. 
+
+So what if we could write a `useReducer` Hook that lets us manage the local state of our component with a reducer? A simplified version of it might look like this:
+
+```javascript
+function useReducer(reducer, initialState) {
+  const [state, setState] = useState(initialState);
+
+  function dispatch(action) {
+    const nextState = reducer(state, action);
+    setState(nextState);
+  }
+
+  return [state, dispatch];
+}
+```
+
+Now we could use it in our component, and let the reducer drive its state management:
+
+```javascript
+function Todos() {
+  const [todos, dispatch] = useReducer(todosReducer, []);
+
+  function handleAddClick(text) {
+    dispatch({ type: 'add', text });
+  }
+
+  // ...
+}
+```
+
+The need to manage local state with a reducer in a complex component is common enough that we've built the useReducer Hook right into React. 
+
 ---
