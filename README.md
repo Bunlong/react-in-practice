@@ -1078,4 +1078,93 @@ function useFriendStatus(friendID) {
 
 Okay, now let's see how we can use our custom Hook.
 
+#### Using a Custom Hook
+
+In the beginning, our stated goal was to remove the duplicated logic from the `FriendStatus` and `FriendListItem` components. Both of them want to know whether a friend is online.
+
+We've extracted this logic to a `useFriendStatus` hook, we can just use it:
+
+```javascript
+function FriendStatus(props) {
+  const isOnline = useFriendStatus(props.friend.id);
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+```javascript
+function FriendListItem(props) {
+  const isOnline = useFriendStatus(props.friend.id);
+
+  return (
+    <li style={{ color: isOnline ? 'green' : 'black' }}>
+      {props.friend.name}
+    </li>
+  );
+}
+```
+
+Note:
+
+Do I have to name my custom Hooks starting with "`use`"?
+
+Without `use`, we wouldn't be able to automatically check for violations of rules of Hooks because we couldn't tell if a certain function contains calls to Hooks inside of it.
+
+Do two components using the same Hook share state?
+
+No, custom Hooks are a mechanism to reuse stateful logic (such as setting up a subscription and remembering the current value), but every time you use a custom Hook, all state and effects inside of it are fully isolated.
+
+How does a custom Hook get isolated state?
+
+Each call to a Hook gets isolated state. Because we call `useFriendStatus` directly, from React's point of view our component just calls `useState` and `useEffect`. And as we learned earlier, we can call `useState` and `useEffect` many times in one component, and they will be completely independent.
+
+#### Pass Information Between Hooks
+
+Since Hooks are functions, so we can pass information between them.
+
+We'll use another component from our hypothetical chat example. This is a chat message recipient picker that displays whether the currently selected friend is online:
+
+```javascript
+const friendList = [
+  { id: 1, name: 'Brian' },
+  { id: 2, name: 'Ryan' },
+  { id: 3, name: 'Rosa' },
+];
+
+function ChatRecipientPicker() {
+  const [recipientID, setRecipientID] = useState(1);
+  const isRecipientOnline = useFriendStatus(recipientID);
+
+  return (
+    <>
+      <Circle color={isRecipientOnline ? 'green' : 'red'} />
+      <select
+        value={recipientID}
+        onChange={e => setRecipientID(Number(e.target.value))}
+      >
+        {friendList.map(friend => (
+          <option key={friend.id} value={friend.id}>
+            {friend.name}
+          </option>
+        ))}
+      </select>
+    </>
+  );
+}
+```
+
+We keep the currently chosen friend ID in the `recipientID` state variable, and update it if the user chooses a different friend in the `<select>` picker.
+
+Because the `useState` Hook call gives us the latest value of the `recipientID` state variable, we can pass it to our custom `useFriendStatus` Hook as an argument:
+
+```javascript
+const [recipientID, setRecipientID] = useState(1);
+const isRecipientOnline = useFriendStatus(recipientID);
+```
+
+This lets us know whether the currently selected friend is online. If we pick a different friend and update the `recipientID` state variable, our `useFriendStatus` Hook will unsubscribe from the previously selected friend, and subscribe to the status of the newly selected one.
+
 ---
