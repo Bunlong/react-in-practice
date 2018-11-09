@@ -971,4 +971,111 @@ useEffect(() => {
 ```
 
 In the future, the second argument might get added automatically by a build-time transformation.
+
+### 5. Building Your Own Hooks
+
+Building your own Hooks lets you extract component logic into reusable functions.
+
+When we were learning about using the Effect Hook, we saw this component from a chat application that displays a message indicating whether a friend is online or offline:
+
+```javascript
+import { useState, useEffect } from 'react';
+
+function FriendStatus(props) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+Now let's say that our chat application also has a contact list, and we want to render names of online users with a green color.
+
+```javascript
+import { useState, useEffect } from 'react';
+
+function FriendListItem(props) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  return (
+    <li style={{ color: isOnline ? 'green' : 'black' }}>
+      {props.friend.name}
+    </li>
+  );
+}
+```
+
+W'd like to share this logic between `FriendStatus` and `FriendListItem`.
+
+#### Extracting a Custom Hook
+
+When we want to share logic between two JavaScript functions, we would extract it to a third function. Both components and Hooks are functions, so this works for them too.
+
+A custom Hook is a JavaScript function whose name starts with "`use`". 
+
+For example, `useFriendStatus` below is our first custom Hook:
+
+```javascript
+import { useState, useEffect } from 'react';
+
+function useFriendStatus(friendID) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange);
+    };
+  });
+
+  return isOnline;
+}
+```
+
+There's nothing new inside of it, the logic is copied from the components above. Just like in a component, make sure to only call other Hooks unconditionally at the top level of your custom Hook.
+
+We can decide what it takes as arguments, and what, if anything, it should return. In other words, it's just like a normal function. Its name should always start with `use` so that you can tell at a glance that the rules of Hooks apply to it.
+
+The purpose of our `useFriendStatus` Hook is to subscribe us to a friend's status. This is why it takes `friendID` as an argument, and returns whether this friend is online:
+
+```javascript
+function useFriendStatus(friendID) {
+  const [isOnline, setIsOnline] = useState(null);
+  
+  // ...
+
+  return isOnline;
+}
+```
+
+Okay, now let's see how we can use our custom Hook.
+
 ---
