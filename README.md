@@ -4,7 +4,7 @@
 
 Hooks
 
- 1. Introducing
+ 1. [Introducing](#hooksIntroducing)
  2. A Brief of Hook
  3. Using the State Hook
  4. Using the Effect Hook
@@ -15,7 +15,7 @@ Hooks
 
 ## Hooks
 
-### 1. Introducing
+### <a name="hooksIntroducing"></a>1. Introducing
 
 Hooks are a new feature that lets you use state and other React features without writing a class. They're released in React v16.7.0.
 
@@ -1245,7 +1245,7 @@ The need to manage local state with a reducer in a complex component is common e
 
 #### Basic Hooks
 
-**useState*
+**useState**
 
 ```javascript
 const [state, setState] = useState(initialState);
