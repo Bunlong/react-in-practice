@@ -2,12 +2,23 @@
 
 ### Table of contents:
 
+Code-Splitting
+
+ 1. import()
+ 2. lazy
+ 3. Suspense
+ 4. Error boundaries
+ 5. Route-based code splitting
+ 6. Named Exports
+
+contextType
+
 Hooks
 
  1. [Introducing](#hooksIntroducing)
- 2. A Brief of Hook
- 3. Using the State Hook
- 4. Using the Effect Hook
+ 2. [A Brief of Hook](#hooksBrief)
+ 3. [Using the State Hook](#hooksUsingtheStateHook)
+ 4. [Using the Effect Hook](#hooksUsingtheEffectHook)
  5. Writing Custom Hooks
  6. Hooks APIs
 
@@ -21,7 +32,7 @@ Hooks are a new feature that lets you use state and other React features without
 
 Hooks are functions that let you "hook into" React state and lifecycle features from function components. Hooks don't work inside classes they let you use React without classes.
 
-### 2. A Brief of Hook
+### <a name="hooksBrief"></a>2. A Brief of Hook
 
 **State Hook**
 
@@ -344,7 +355,7 @@ To build your own hooks you need to follow the `useSomething` naming convention.
 
 You can write custom Hooks that cover a wide range of use cases like form handling, animation, declarative subscriptions, timers, and probably many more we haven't considered.
 
-### 3. Using the State Hook
+### <a name="hooksUsingtheStateHook"></a>3. Using the State Hook
 
 #### What's a Hook?
 
@@ -529,7 +540,7 @@ function handleOrangeClick() {
 }
 ```
 
-### 4. Using the Effect Hook
+### <a name="hooksUsingtheEffectHook"></a>4. Using the Effect Hook
 
 The Effect Hook lets you perform side effects in function components:
 
