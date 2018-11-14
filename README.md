@@ -17,11 +17,11 @@ Hooks
 
  1. [Introducing](#hooksIntroducing)
  2. [A Brief of Hook](#hooksBrief)
- 3. [Using the State Hook](./using_the_state_hook.md "Using the State Hook")
- 4. [Using the Effect Hook](./using_the_effect_hook.md "Using the Effect Hook")
- 5. [Building Your Own Hooks](./building_your_own_hooks.md "Building Your Own Hooks")
- 6. [Rules of Hooks](./rules_of_hooks.md "Rules of Hooks")
- 7. [Hooks APIs](./hooks_apis.md "Hooks APIs")
+ 3. [Using the State Hook](./hooks/using_the_state_hook.md "Using the State Hook")
+ 4. [Using the Effect Hook](./hooks/using_the_effect_hook.md "Using the Effect Hook")
+ 5. [Building Your Own Hooks](./hooks/building_your_own_hooks.md "Building Your Own Hooks")
+ 6. [Rules of Hooks](./hooks/rules_of_hooks.md "Rules of Hooks")
+ 7. [Hooks APIs](./hooks/hooks_apis.md "Hooks APIs")
 
 ---
 
