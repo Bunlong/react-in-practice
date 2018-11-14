@@ -71,3 +71,9 @@ const [state, setState] = useState(() => {
   return initialState;
 });
 ```
+
+**useState**
+
+```javascript
+useEffect(didUpdate);
+```
