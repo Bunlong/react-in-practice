@@ -14,14 +14,14 @@ Code-Splitting
 contextType
 
 Hooks
-
- 1. [Introducing](#hooksIntroducing)
- 2. [A Brief of Hook](#hooksBrief)
- 3. [Using the State Hook](./hooks/using_the_state_hook.md "Using the State Hook")
- 4. [Using the Effect Hook](./hooks/using_the_effect_hook.md "Using the Effect Hook")
- 5. [Building Your Own Hooks](./hooks/building_your_own_hooks.md "Building Your Own Hooks")
- 6. [Rules of Hooks](./hooks/rules_of_hooks.md "Rules of Hooks")
- 7. [Hooks APIs](./hooks/hooks_apis.md "Hooks APIs")
+ 
+  1. [Introducing](#hooksIntroducing)
+  2. [A Brief of Hook](#hooksBrief)
+      1. [Using the State Hook](./hooks/using_the_state_hook.md "Using the State Hook")
+      2. [Using the Effect Hook](./hooks/using_the_effect_hook.md "Using the Effect Hook")
+      3. [Building Your Own Hooks](./hooks/building_your_own_hooks.md "Building Your Own Hooks")
+      4. [Rules of Hooks](./hooks/rules_of_hooks.md "Rules of Hooks")
+      5. [Hooks APIs](./hooks/hooks_apis.md "Hooks APIs")
 
 ---
 
@@ -110,6 +110,8 @@ function withManyStates() {
 ```
 
 React also provides a few built-in Hooks like `useState`. You can also create custom Hooks to reuse stateful behavior between different components. We'll look at the built-in Hooks first.
+
+> You can learn more about the State Hook on a dedicated page: [Using the State Hook](./hooks/using_the_state_hook.md "Using the State Hook").
 
 **Effect Hook**
 
@@ -291,14 +293,7 @@ export default App;
 
 Hooks let you organize side effects in a component by what pieces are related (such as adding and removing a event or subscription), rather than forcing a split based on lifecycle methods.
 
-**Rules of Hooks**
-
-Hooks are JavaScript functions, but they impose two additional rules:
-
-- Only call Hooks at the top level. Don't call Hooks inside loops, conditions, or nested functions.
-- Only call Hooks from React function components. Don't call Hooks from regular JavaScript functions. (There is just one other valid place to call Hooks is your own custom Hooks.)
-
-The better way you can use a [linter plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to enforce these rules automatically.
+> You can learn more about the Effect Hook on a dedicated page: [Using the Effect Hook](./hooks/using_the_effect_hook.md "Using the Effect Hook").
 
 **Building Your Own Hooks**
 
@@ -355,5 +350,18 @@ The state of these components is completely independent. Hooks are a way to reus
 To build your own hooks you need to follow the `useSomething` naming convention. If a function's name starts with "use" and it calls other Hooks, we say it is a custom Hook.
 
 You can write custom Hooks that cover a wide range of use cases like form handling, animation, declarative subscriptions, timers, and probably many more we haven't considered.
+
+> You can learn more about the Building Your Own Hooks on a dedicated page: [Building Your Own Hooks](./hooks/building_your_own_hooks.md "Building Your Own Hooks").
+
+**Rules of Hooks**
+
+Hooks are JavaScript functions, but they impose two additional rules:
+
+- Only call Hooks at the top level. Don't call Hooks inside loops, conditions, or nested functions.
+- Only call Hooks from React function components. Don't call Hooks from regular JavaScript functions. (There is just one other valid place to call Hooks is your own custom Hooks.)
+
+The better way you can use a [linter plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to enforce these rules automatically.
+
+> You can learn more about the Rules of Hooks on a dedicated page: [Rules of Hooks](./hooks/rules_of_hooks.md "Rules of Hooks").
 
 ---
