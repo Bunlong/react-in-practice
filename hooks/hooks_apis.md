@@ -330,3 +330,14 @@ FancyInput = forwardRef(FancyInput);
 
 In this example, a parent component that renders `<FancyInput ref={fancyInputRef} />` would be able to call `fancyInputRef.current.focus()`.
 
+### useMutationEffect
+
+The signature is identical to `useEffect`, but it fires synchronously during the same phase that React performs its DOM mutations, before sibling components have been updated. Use this to perform custom DOM mutations.
+
+Prefer the standard useEffect when possible to avoid blocking visual updates.
+
+> Note
+> 
+> Avoid reading from the DOM in `useMutationEffect`. If you do, you can cause performance problems by introducing [layout thrash](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing "layout thrash"). When reading computed styles or layout information, `useLayoutEffect` is more appropriate.
+
+
