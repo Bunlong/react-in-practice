@@ -17,7 +17,7 @@ Code-Splitting
  1. [import()](#codeSplittingImport)
  2. [lazy](#codeSplittingLazy)
  3. [Suspense](#codeSplittingSuspense)
- 4. Error boundaries
+ 4. [Error boundaries](#codeSplittingErrorBoundaries)
  5. Route-based code splitting
  6. Named Exports
 
@@ -439,4 +439,63 @@ function MyComponent() {
     </Suspense>
   );
 }
+```
+
+### <a name="codeSplittingErrorBoundaries"></a>4. Error boundaries
+
+> Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed. 
+>
+> Error boundaries catch errors during rendering, in lifecycle methods, and in constructors of the whole tree below them.
+
+A class component becomes an error boundary once it defines either (or both) of the lifecycle methods `static getDerivedStateFromError()` or `componentDidCatch()`. Use `static getDerivedStateFromError()` to render a fallback UI after an error has been thrown. Use `componentDidCatch()` to log error information.
+
+```javascript
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    // You can also log the error to an error reporting service
+    // logErrorToMyService(error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children; 
+  }
+}
+```
+
+> Note that error boundaries only catch errors in the components below them in the tree.
+
+Once you've created your Error Boundary, you can use it anywhere above your lazy components to display an error state when there's a network error.
+
+```javascript
+import MyErrorBoundary from './MyErrorBoundary';
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+const AnotherComponent = React.lazy(() => import('./AnotherComponent'));
+
+const MyComponent = () => (
+  <div>
+    <MyErrorBoundary>
+      <Suspense fallback={<div>Loading...</div>}>
+        <section>
+          <OtherComponent />
+          <AnotherComponent />
+        </section>
+      </Suspense>
+    </MyErrorBoundary>
+  </div>
+);
 ```
