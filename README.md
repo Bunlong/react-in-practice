@@ -18,8 +18,8 @@ Code-Splitting
  2. [lazy](#codeSplittingLazy)
  3. [Suspense](#codeSplittingSuspense)
  4. [Error boundaries](#codeSplittingErrorBoundaries)
- 5. Route-based code splitting
- 6. Named Exports
+ 5. [Route-based code splitting](#codeSplittingRouteBased)
+ 6. [Named Exports](#codeSplittingNamedExports)
 
 contextType
 
@@ -498,4 +498,56 @@ const MyComponent = () => (
     </MyErrorBoundary>
   </div>
 );
+```
+
+### <a name="codeSplittingRouteBased"></a>5. Route-based code splitting
+
+Deciding where in your app to introduce code splitting can be a bit tricky.
+
+> A good place to start is with routes.
+
+Here's an example of how to setup route-based code splitting into your app using libraries like React Router with `lazy`.
+
+```javascript
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+
+const Home = lazy(() => import('./routes/Home'));
+const About = lazy(() => import('./routes/About'));
+
+const App = () => (
+  <Router>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/about" component={About}/>
+      </Switch>
+    </Suspense>
+  </Router>
+);
+```
+
+### <a name="codeSplittingNamedExports"></a>6. Named Exports
+
+> `lazy` currently only supports default exports.
+
+```javascript
+// ManyComponents.js
+export const MyComponent = /* ... */;
+export const MyUnusedComponent = /* ... */;
+```
+
+If the module you want to import uses named exports, you can create an intermediate module that reexports it as the default.
+
+```javascript
+// MyComponent.js
+export { MyComponent as default } from "./ManyComponents.js";
+```
+
+Use like so:
+
+```javascript
+// MyApp.js
+import React, { lazy } from 'react';
+const MyComponent = lazy(() => import("./MyComponent.js"));
 ```
