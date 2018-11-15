@@ -15,7 +15,7 @@ Hooks
 Code-Splitting
 
  1. [import()](#codeSplittingImport)
- 2. lazy
+ 2. [lazy](#codeSplittingLazy)
  3. Suspense
  4. Error boundaries
  5. Route-based code splitting
@@ -387,3 +387,40 @@ import("./math").then(math => {
   console.log(math.add(16, 26));
 });
 ```
+
+### <a name="#codeSplittingLazy"></a>2. lazy
+
+Before:
+
+```javascript
+import OtherComponent from './OtherComponent';
+
+function MyComponent() {
+  return (
+    <div>
+      <OtherComponent />
+    </div>
+  );
+}
+```
+
+After:
+
+```javascript
+import React, {lazy} from 'react';
+
+const OtherComponent = lazy(() => import('./OtherComponent'));
+
+function MyComponent() {
+  return (
+    <div>
+      <OtherComponent />
+    </div>
+  );
+}
+```
+
+This will automatically load the bundle containing the `OtherComponent` when this component gets rendered.
+
+`lazy` takes a function that must call a dynamic import(). This must return a Promise which resolves to a module with a default export containing a React component.
+
