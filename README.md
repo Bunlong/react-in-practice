@@ -16,7 +16,7 @@ Code-Splitting
 
  1. [import()](#codeSplittingImport)
  2. [lazy](#codeSplittingLazy)
- 3. Suspense
+ 3. [Suspense](#codeSplittingSuspense)
  4. Error boundaries
  5. Route-based code splitting
  6. Named Exports
@@ -424,3 +424,19 @@ This will automatically load the bundle containing the `OtherComponent` when thi
 
 `lazy` takes a function that must call a dynamic import(). This must return a Promise which resolves to a module with a default export containing a React component.
 
+### <a name="#codeSplittingSuspense"></a>3. Suspense
+
+If the module containing the `OtherComponent` is not yet loaded by the time `MyComponent` renders, we must show some fallback content while we're waiting for it to load - such as a loading indicator. This is done using the `Suspense component`.
+
+```javascript
+import React, {lazy, Suspense} from 'react';
+const OtherComponent = lazy(() => import('./OtherComponent'));
+
+function MyComponent() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OtherComponent />
+    </Suspense>
+  );
+}
+```
