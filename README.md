@@ -368,7 +368,7 @@ The better way you can use a [linter plugin](https://www.npmjs.com/package/eslin
 
 ## Code-Splitting
 
-### <a name="#codeSplittingImport"></a>1. import()
+### <a name="codeSplittingImport"></a>1. import()
 
 The best way to introduce code-splitting into your app is through the dynamic `import()` syntax.
 
@@ -388,7 +388,7 @@ import("./math").then(math => {
 });
 ```
 
-### <a name="#codeSplittingLazy"></a>2. lazy
+### <a name="codeSplittingLazy"></a>2. lazy
 
 Before:
 
@@ -424,7 +424,7 @@ This will automatically load the bundle containing the `OtherComponent` when thi
 
 `lazy` takes a function that must call a dynamic import(). This must return a Promise which resolves to a module with a default export containing a React component.
 
-### <a name="#codeSplittingSuspense"></a>3. Suspense
+### <a name="codeSplittingSuspense"></a>3. Suspense
 
 If the module containing the `OtherComponent` is not yet loaded by the time `MyComponent` renders, we must show some fallback content while we're waiting for it to load - such as a loading indicator. This is done using the `Suspense component`.
 
