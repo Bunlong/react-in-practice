@@ -2,17 +2,6 @@
 
 ### Table of contents:
 
-Code-Splitting
-
- 1. import()
- 2. lazy
- 3. Suspense
- 4. Error boundaries
- 5. Route-based code splitting
- 6. Named Exports
-
-contextType
-
 Hooks
  
   1. [Introducing](#hooksIntroducing)
@@ -22,6 +11,17 @@ Hooks
       3. [Building Your Own Hooks](./hooks/building_your_own_hooks.md "Building Your Own Hooks")
       4. [Rules of Hooks](./hooks/rules_of_hooks.md "Rules of Hooks")
       5. [Hooks APIs](./hooks/hooks_apis.md "Hooks APIs")
+
+Code-Splitting
+
+ 1. [import()](#codeSplittingImport)
+ 2. lazy
+ 3. Suspense
+ 4. Error boundaries
+ 5. Route-based code splitting
+ 6. Named Exports
+
+contextType
 
 ---
 
@@ -365,3 +365,25 @@ The better way you can use a [linter plugin](https://www.npmjs.com/package/eslin
 > You can learn more about the Rules of Hooks on a dedicated page: [Rules of Hooks](./hooks/rules_of_hooks.md "Rules of Hooks").
 
 ---
+
+## Code-Splitting
+
+### <a name="#codeSplittingImport"></a>1. import()
+
+The best way to introduce code-splitting into your app is through the dynamic `import()` syntax.
+
+Before:
+
+```javascript
+import { add } from './math';
+
+console.log(add(16, 26));
+```
+
+After:
+
+```javascript
+import("./math").then(math => {
+  console.log(math.add(16, 26));
+});
+```
