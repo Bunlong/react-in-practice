@@ -1,4 +1,4 @@
-# React in Practice
+# React in Practice (React v.16.6.x)
 
 ### Table of contents:
 
@@ -14,14 +14,22 @@ Hooks
 
 Code-Splitting
 
- 1. [import()](#codeSplittingImport)
- 2. [lazy](#codeSplittingLazy)
- 3. [Suspense](#codeSplittingSuspense)
- 4. [Error boundaries](#codeSplittingErrorBoundaries)
- 5. [Route-based code splitting](#codeSplittingRouteBased)
- 6. [Named Exports](#codeSplittingNamedExports)
+  1. [import()](#codeSplittingImport)
+  2. [lazy](#codeSplittingLazy)
+  3. [Suspense](#codeSplittingSuspense)
+  4. [Error boundaries](#codeSplittingErrorBoundaries)
+  5. [Route-based code splitting](#codeSplittingRouteBased)
+  6. [Named Exports](#codeSplittingNamedExports)
+
+[Context](#context)
+
+Composition
 
 contextType
+
+Portals
+
+memo
 
 ---
 
@@ -506,7 +514,7 @@ Deciding where in your app to introduce code splitting can be a bit tricky.
 
 > A good place to start is with routes.
 
-Here's an example of how to setup route-based code splitting into your app using libraries like React Router with `lazy`.
+Here's an example of how to setup route-based code splitting into your app using libraries like [React Router](https://reacttraining.com/react-router "React Router") with `lazy`.
 
 ```javascript
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -551,3 +559,20 @@ Use like so:
 import React, { lazy } from 'react';
 const MyComponent = lazy(() => import("./MyComponent.js"));
 ```
+
+## Context
+
+> Context provides a way to pass data through the component tree without having to pass props down manually at every level.
+
+- When to Use Context
+- Before You Use Context
+- API
+  - React.createContext
+  - Context.Provider
+  - Class.contextType
+  - Context.Consumer
+- Caveats
+
+### When to Use Context
+
+> Context is designed to share data that can be considered as "global" for a tree of React components, such as the current authenticated user, theme, or preferred language.
