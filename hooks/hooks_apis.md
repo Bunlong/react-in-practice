@@ -231,3 +231,26 @@ function Counter({initialCount}) {
   );
 }
 ```
+
+### useCallback
+
+Syntax:
+
+```javascript
+useCallback(fn, inputs) is equivalent to useMemo(() => fn, inputs).
+```
+
+For example:
+
+```javascript
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+
+- Returns a [memoized](./hooks/using_the_state_hook.md "memoized") callback.
+- Pass an inline callback and an array of inputs. `useCallback` will return a memoized version of the callback that only changes if one of the inputs has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders (e.g. `shouldComponentUpdate`).
+
