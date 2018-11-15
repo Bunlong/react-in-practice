@@ -306,3 +306,27 @@ function TextInputWithFocusButton() {
 ```
 
 Note that `useRef()` is useful for more than the `ref` attribute.
+
+### useImperativeMethods
+
+```javascript
+useImperativeMethods(ref, createInstance, [inputs])
+```
+
+`useImperativeMethods` customizes the instance value that is exposed to parent components when using `ref`. As always, imperative code using `refs` should be avoided in most cases. `useImperativeMethods` should be used with `forwardRef`:
+
+```javascript
+function FancyInput(props, ref) {
+  const inputRef = useRef();
+  useImperativeMethods(ref, () => ({
+    focus: () => {
+      inputRef.current.focus();
+    }
+  }));
+  return <input ref={inputRef} ... />;
+}
+FancyInput = forwardRef(FancyInput);
+```
+
+In this example, a parent component that renders `<FancyInput ref={fancyInputRef} />` would be able to call `fancyInputRef.current.focus()`.
+
