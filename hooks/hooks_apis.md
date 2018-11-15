@@ -133,6 +133,10 @@ Now the subscription will only be recreated when props.source changes.
 
 Passing in an empty array [] of inputs tells React that your effect doesn't depend on any values from the component, so that effect would run only on mount and clean up on unmount; it won’t run on updates.
 
+> Note
+> 
+> The array of inputs is not passed as arguments to the effect function. Conceptually, though, that's what they represent: every value referenced inside the effect function should also appear in the inputs array. In the future, a sufficiently advanced compiler could create this array automatically.
+
 **useContext**
 
 ```javascript
@@ -251,6 +255,27 @@ const memoizedCallback = useCallback(
 );
 ```
 
-- Returns a [memoized](./hooks/using_the_state_hook.md "memoized") callback.
+- Returns a [memoized](https://en.wikipedia.org/wiki/Memoization "memoized") callback.
 - Pass an inline callback and an array of inputs. `useCallback` will return a memoized version of the callback that only changes if one of the inputs has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders (e.g. `shouldComponentUpdate`).
+
+> Note
+> 
+> The array of inputs is not passed as arguments to the callback. Conceptually, though, that's what they represent: every value referenced inside the callback should also appear in the inputs array. In the future, a sufficiently advanced compiler could create this array automatically.
+
+### useMemo
+
+```javascript
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+- Returns a [memoized](https://en.wikipedia.org/wiki/Memoization "memoized") callback.
+- Pass a "create" function and an array of inputs.
+- `useMemo` will only recompute the memoized value when one of the inputs has changed.
+- This optimization helps to avoid expensive calculations on every render.
+
+If no array is provided, a new value will be computed whenever a new function instance is passed as the first argument. (With an inline function, on every render.)
+
+> Note
+>
+> The array of inputs is not passed as arguments to the function. Conceptually, though, that's what they represent: every value referenced inside the function should also appear in the inputs array. In the future, a sufficiently advanced compiler could create this array automatically.
 
