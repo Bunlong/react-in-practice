@@ -132,3 +132,12 @@ useEffect(
 Now the subscription will only be recreated when props.source changes.
 
 Passing in an empty array [] of inputs tells React that your effect doesn't depend on any values from the component, so that effect would run only on mount and clean up on unmount; it won’t run on updates.
+
+**useContext**
+
+```javascript
+const context = useContext(Context);
+```
+
+- Its accepts a context object (the value returned from `React.createContext`) and returns the current context value, as given by the nearest context provider for the given context.
+- When the provider updates, this Hook will trigger a rerender with the latest context value.
