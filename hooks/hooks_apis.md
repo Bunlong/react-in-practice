@@ -279,3 +279,30 @@ If no array is provided, a new value will be computed whenever a new function in
 >
 > The array of inputs is not passed as arguments to the function. Conceptually, though, that's what they represent: every value referenced inside the function should also appear in the inputs array. In the future, a sufficiently advanced compiler could create this array automatically.
 
+### useRef
+
+```javascript
+const refContainer = useRef(initialValue);
+```
+
+`useRef` returns a mutable ref object whose `.current` property is initialized to the passed argument (`initialValue`). The returned object will persist for the full lifetime of the component.
+
+A common use case is to access a child imperatively:
+
+```javascript
+function TextInputWithFocusButton() {
+  const inputEl = useRef(null);
+  const onButtonClick = () => {
+    // `current` points to the mounted text input element
+    inputEl.current.focus();
+  };
+  return (
+    <>
+      <input ref={inputEl} type="text" />
+      <button onClick={onButtonClick}>Focus the input</button>
+    </>
+  );
+}
+```
+
+Note that `useRef()` is useful for more than the `ref` attribute.
