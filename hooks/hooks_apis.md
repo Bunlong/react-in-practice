@@ -340,4 +340,12 @@ Prefer the standard useEffect when possible to avoid blocking visual updates.
 > 
 > Avoid reading from the DOM in `useMutationEffect`. If you do, you can cause performance problems by introducing [layout thrash](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing "layout thrash"). When reading computed styles or layout information, `useLayoutEffect` is more appropriate.
 
+### useLayoutEffect
 
+The signature is identical to `useEffect`, but it fires synchronously after all DOM mutations. Use this to read layout from the DOM and synchronously re-render. Updates scheduled inside `useLayoutEffect` will be flushed synchronously, before the browser has a chance to paint.
+
+Prefer the standard `useEffect` when possible to avoid blocking visual updates.
+
+> Tip
+>
+> If you're migrating code from a class component, `useLayoutEffect` fires in the same phase as `componentDidMount` and `componentDidUpdate`, so if you're unsure of which effect Hook to use, it’s probably the least risky.
