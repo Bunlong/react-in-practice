@@ -594,9 +594,9 @@ const MyComponent = lazy(() => import("./MyComponent.js"));
 Context API provides a way to pass data through the component tree without having to pass props down manually to every level. In React, data is often passed from a parent to its child component as a property.
 
 Using the new React Context API depends on three main steps:
-  - 1. Passing the initial state to `React.createContext`. This function then returns an object with a `Provider` and a `Consumer`.
-  - 2. Using the `Provider` component at the top of the tree and making it accept a prop called `value`. This value can be anything.
-  - 3. Using the `Consumer` component anywhere below the Provider in the component tree to get a subset of the state.
+  1. Passing the initial state to `React.createContext`. This function then returns an object with a `Provider` and a `Consumer`.
+  2. Using the `Provider` component at the top of the tree and making it accept a prop called `value`. This value can be anything.
+  3. Using the `Consumer` component anywhere below the Provider in the component tree to get a subset of the state.
 
 #### React.createContext
 
@@ -651,4 +651,110 @@ class MyClass extends React.Component {
 ```
 
 The `Consumer` component is used anywhere below the provider in the tree and accepts a prop called "children" which must be a function that accepts the value and must return a react element (JSX).
+
+#### Examples
+
+##### Dynamic Context
+
+`theme-context.js`
+
+```javascript
+import React from 'react';
+
+export const themes = {
+  dark: {
+    foreground: '#ffffff',
+    background: '#222222',
+  },
+  light: {
+    foreground: '#000000',
+    background: '#eeeeee',
+  },
+};
+
+export const ThemeContext = React.createContext(
+  themes.dark, // default value
+);
+```
+
+`themed-button.js`
+
+```javascript
+import React from 'react';
+
+import {ThemeContext} from './theme-context';
+
+class ThemedButton extends React.Component {
+  render() {
+    let props = this.props;
+    let theme = this.context;
+    
+    return (
+      <button
+        {...props}
+        style={{backgroundColor: theme.background}}
+      />
+    );
+  }
+}
+
+ThemedButton.contextType = ThemeContext;
+
+export default ThemedButton;
+```
+
+`App.js`
+
+```javascript
+import React, { Component } from 'react';
+
+import {ThemeContext, themes} from './theme-context';
+import ThemedButton from './themed-button';
+
+// An intermediate component that uses the ThemedButton
+function Toolbar(props) {
+  return (
+    <ThemedButton onClick={props.changeTheme}>
+      Change Theme
+    </ThemedButton>
+  );
+}
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: themes.light,
+    };
+
+    this.toggleTheme = () => {
+      this.setState(state => ({
+        theme:
+          state.theme === themes.dark
+            ? themes.light
+            : themes.dark,
+      }));
+    };
+  }
+
+  render() {
+    // The ThemedButton button inside the ThemeProvider
+    // uses the theme from state while the one outside uses
+    // the default dark theme
+    return (
+      <div>
+        <ThemeContext.Provider value={this.state.theme}>
+          <Toolbar changeTheme={this.toggleTheme} />
+        </ThemeContext.Provider>
+        <div>
+          <ThemedButton />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
 
