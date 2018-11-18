@@ -573,8 +573,82 @@ const MyComponent = lazy(() => import("./MyComponent.js"));
   - Context.Provider
   - Class.contextType
   - Context.Consumer
+- Examples
+  - Dynamic Context
+  - Updating Context from a Nested Component
+  - Consuming Multiple Contexts
 - Caveats
 
 ### When to Use Context
 
 > Context is designed to share data that can be considered as "global" for a tree of React components, such as the current authenticated user, theme, or preferred language.
+
+> Using context, we can avoid passing props through intermediate elements.
+
+### Before You Use Context
+
+> Context is primarily used when some data needs to be accessible by many components at different nesting levels.
+
+### API
+
+Context API provides a way to pass data through the component tree without having to pass props down manually to every level. In React, data is often passed from a parent to its child component as a property.
+
+Using the new React Context API depends on three main steps:
+  - 1. Passing the initial state to `React.createContext`. This function then returns an object with a `Provider` and a `Consumer`.
+  - 2. Using the `Provider` component at the top of the tree and making it accept a prop called `value`. This value can be anything.
+  - 3. Using the `Consumer` component anywhere below the Provider in the component tree to get a subset of the state.
+
+#### React.createContext
+
+```javascript
+const MyContext = React.createContext(defaultValue);
+```
+
+`React.createContext` which is passed the initial value (defaultValue). This returns an object with a Provider and a Consumer.
+
+#### Context.Provider
+
+```javascript
+<MyContext.Provider value={/* some value */}>
+```
+
+The `Provider` component is used higher in the tree and accepts a prop called value (which can be anything).
+
+#### Class.contextType
+
+- `contextType` is used to:
+  - Perform a side-effect at mount using the value of Context
+  - Render something based on the value of Context
+
+```javascript
+class MyClass extends React.Component {
+  static contextType = MyContext;
+  componentDidMount() {
+    let value = this.context;
+    /* perform a side-effect at mount using the value of MyContext */
+  }
+  componentDidUpdate() {
+    let value = this.context;
+    /* ... */
+  }
+  componentWillUnmount() {
+    let value = this.context;
+    /* ... */
+  }
+  render() {
+    let value = this.context;
+    /* render something based on the value of MyContext */
+  }
+}
+```
+
+#### Context.Consumer
+
+```javascript
+<MyContext.Consumer>
+  {value => /* render something based on the context value */}
+</MyContext.Consumer>
+```
+
+The `Consumer` component is used anywhere below the provider in the tree and accepts a prop called "children" which must be a function that accepts the value and must return a react element (JSX).
+
