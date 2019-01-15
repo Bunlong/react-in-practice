@@ -23,7 +23,7 @@ Code-Splitting
 
 [Context](#context)
 
-[React Context API Pattern](#reactcontextapipattern)
+[React Context API Pattern](#reactContextAPIPattern)
 
 Composition
 
@@ -863,7 +863,7 @@ function Content() {
 export default App;
 ```
 
-## React Context API Pattern
+## <a name="reactContextAPIPattern"></a> React Context API Pattern
 
 The **Context API** is a neat way to pass state across the app without having to use props.
 
